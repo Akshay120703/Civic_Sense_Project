@@ -1,0 +1,56 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Virtual Environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database
+database/*.db
+database/*.sqlite
+
+# Uploads (will be mounted as volume)
+uploads/
+
+# Documentation
+README*.md
+DEPLOYMENT_*.md
+Steps.md
+
+# Test files
+test_*.php
+
+# Python files (not needed for PHP)
+*.py
+requirements.txt
+setup_*.py
+run_project.py
+
+# Other deployment files
+railway.json
+nixpacks.toml
+render.yaml
+Procfile

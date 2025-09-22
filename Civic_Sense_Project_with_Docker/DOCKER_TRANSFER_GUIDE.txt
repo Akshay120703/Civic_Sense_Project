@@ -1,0 +1,263 @@
+================================================================================
+                    CIVIC SENSE PROJECT - DOCKER TRANSFER GUIDE
+================================================================================
+
+This guide will help you transfer your Civic Sense project to a new Windows 
+computer and run it using Docker. Follow these steps carefully.
+
+================================================================================
+                                PREREQUISITES
+================================================================================
+
+1. NEW COMPUTER REQUIREMENTS:
+   - Windows 10/11 (64-bit)
+   - At least 4GB RAM
+   - 10GB free disk space
+   - Internet connection for Docker installation
+
+2. SOFTWARE TO INSTALL ON NEW COMPUTER:
+   - Docker Desktop for Windows
+   - (Optional) Git for Windows
+
+================================================================================
+                            STEP 1: PREPARE CURRENT SYSTEM
+================================================================================
+
+1.1 STOP CURRENT PROJECT (if running):
+   - Press Ctrl+C in the terminal where PHP server is running
+   - Or close the terminal window
+
+1.2 VERIFY PROJECT FILES:
+   Make sure these files exist in your project folder:
+   ✓ Dockerfile
+   ✓ docker-compose.yml
+   ✓ .dockerignore
+   ✓ start_docker.bat
+   ✓ stop_docker.bat
+   ✓ docker/ folder with apache-config.conf
+   ✓ docker/mysql-init/ folder with 01-init.sql
+   ✓ config/database_docker.php
+
+1.3 CREATE TRANSFER PACKAGE:
+   - Copy the ENTIRE "Civic_Sense_Project" folder
+   - You can use USB drive, cloud storage, or network transfer
+   - Make sure to include ALL files and subfolders
+
+================================================================================
+                            STEP 2: INSTALL DOCKER ON NEW SYSTEM
+================================================================================
+
+2.1 DOWNLOAD DOCKER DESKTOP:
+   - Go to: https://www.docker.com/products/docker-desktop/
+   - Click "Download for Windows"
+   - Save the installer file
+
+2.2 INSTALL DOCKER DESKTOP:
+   - Run the downloaded installer as Administrator
+   - Follow the installation wizard
+   - Enable "Use WSL 2 instead of Hyper-V" if prompted
+   - Restart your computer when installation completes
+
+2.3 VERIFY DOCKER INSTALLATION:
+   - Open Command Prompt (cmd) or PowerShell
+   - Type: docker --version
+   - You should see: Docker version 25.x.x
+   - Type: docker-compose --version
+   - You should see: Docker Compose version v2.x.x
+
+2.4 START DOCKER DESKTOP:
+   - Launch Docker Desktop from Start Menu
+   - Wait for it to fully start (whale icon in system tray)
+   - You'll see "Docker Desktop is running" when ready
+
+================================================================================
+                            STEP 3: TRANSFER PROJECT FILES
+================================================================================
+
+3.1 COPY PROJECT FOLDER:
+   - Copy the entire "Civic_Sense_Project" folder to the new computer
+   - Place it in a convenient location (e.g., Desktop or Documents)
+   - Example path: C:\Users\[Username]\Desktop\Civic_Sense_Project
+
+3.2 VERIFY FILE TRANSFER:
+   - Open the project folder on the new computer
+   - Check that all files are present:
+     * Dockerfile
+     * docker-compose.yml
+     * start_docker.bat
+     * stop_docker.bat
+     * docker/ folder
+     * config/ folder
+     * All other project files
+
+================================================================================
+                            STEP 4: RUN PROJECT ON NEW SYSTEM
+================================================================================
+
+4.1 METHOD 1 - USING BATCH FILES (RECOMMENDED):
+   - Navigate to the project folder
+   - Double-click "start_docker.bat"
+   - Wait for containers to start (may take 2-3 minutes first time)
+   - You'll see "Project started successfully!" message
+
+4.2 METHOD 2 - USING COMMAND LINE:
+   - Open Command Prompt in the project folder
+   - Type: docker-compose up -d
+   - Wait for all containers to start
+   - Type: docker-compose ps (to verify all containers are running)
+
+4.3 VERIFY PROJECT IS RUNNING:
+   - Open web browser
+   - Go to: http://localhost:8080
+   - You should see the Civic Sense homepage
+   - Go to: http://localhost:8081 (phpMyAdmin for database management)
+
+================================================================================
+                            STEP 5: VERIFY FUNCTIONALITY
+================================================================================
+
+5.1 TEST MAIN FEATURES:
+   - Home page loads correctly
+   - Navigation menu works
+   - All pages accessible:
+     * Problems: http://localhost:8080/?page=problems
+     * Solutions: http://localhost:8080/?page=solutions
+     * Forum: http://localhost:8080/?page=forum
+     * Resources: http://localhost:8080/?page=resources
+     * Contact: http://localhost:8080/?page=contact
+     * Login: http://localhost:8080/?page=login
+     * Register: http://localhost:8080/?page=register
+
+5.2 TEST DATABASE CONNECTION:
+   - Go to: http://localhost:8081
+   - Login with:
+     * Server: mysql
+     * Username: civic_user
+     * Password: civic_password
+   - You should see the civic_sense_db database with tables
+
+5.3 TEST ADMIN ACCOUNT:
+   - Go to: http://localhost:8080/?page=login
+   - Login with:
+     * Username: admin
+     * Password: password
+
+================================================================================
+                            STEP 6: DAILY USAGE
+================================================================================
+
+6.1 START PROJECT:
+   - Double-click "start_docker.bat"
+   - Or run: docker-compose up -d
+
+6.2 STOP PROJECT:
+   - Double-click "stop_docker.bat"
+   - Or run: docker-compose down
+
+6.3 VIEW LOGS (if needed):
+   - Open Command Prompt in project folder
+   - Type: docker-compose logs
+   - Type: docker-compose logs web (for web server logs)
+   - Type: docker-compose logs mysql (for database logs)
+
+================================================================================
+                            TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "Docker is not running"
+SOLUTION: 
+- Start Docker Desktop
+- Wait for it to fully load
+- Try again
+
+PROBLEM: "Port already in use"
+SOLUTION:
+- Check what's using the port: netstat -an | findstr :8080
+- Stop conflicting applications
+- Or change ports in docker-compose.yml
+
+PROBLEM: "Container won't start"
+SOLUTION:
+- Check logs: docker-compose logs
+- Rebuild: docker-compose up --build -d
+- Check Docker Desktop is running
+
+PROBLEM: "Database connection failed"
+SOLUTION:
+- Wait for MySQL to fully start (2-3 minutes)
+- Check MySQL logs: docker-compose logs mysql
+- Restart: docker-compose restart mysql
+
+PROBLEM: "Permission denied"
+SOLUTION:
+- Run Command Prompt as Administrator
+- Check file permissions in project folder
+
+================================================================================
+                            IMPORTANT NOTES
+================================================================================
+
+1. DOCKER DESKTOP MUST BE RUNNING:
+   - Always start Docker Desktop before running the project
+   - The whale icon should be visible in system tray
+
+2. PORTS USED:
+   - 8080: Main application
+   - 8081: phpMyAdmin
+   - 3306: MySQL database
+   - Make sure these ports are not used by other applications
+
+3. DATA PERSISTENCE:
+   - Database data is stored in Docker volumes
+   - Data survives container restarts
+   - To completely reset: docker-compose down -v
+
+4. FIRST RUN:
+   - First startup takes longer (2-3 minutes)
+   - Docker needs to download images and build containers
+   - Subsequent starts are much faster
+
+5. RESOURCE USAGE:
+   - Docker uses system resources
+   - Close other heavy applications if needed
+   - Allocate at least 2GB RAM to Docker
+
+================================================================================
+                            SUCCESS INDICATORS
+================================================================================
+
+✅ Docker Desktop is running
+✅ All containers are running (check with: docker-compose ps)
+✅ Main application loads at http://localhost:8080
+✅ phpMyAdmin loads at http://localhost:8081
+✅ Database connection works
+✅ All pages are accessible
+✅ Admin login works
+
+================================================================================
+                            CLEANUP (OPTIONAL)
+================================================================================
+
+TO REMOVE EVERYTHING:
+- Stop project: docker-compose down
+- Remove all data: docker-compose down -v
+- Remove images: docker system prune -a
+
+TO KEEP DATA BUT STOP PROJECT:
+- Just run: docker-compose down
+- Data will be preserved for next startup
+
+================================================================================
+                            SUPPORT
+================================================================================
+
+If you encounter issues:
+1. Check Docker Desktop is running
+2. Verify all files were copied correctly
+3. Check port availability
+4. Review logs: docker-compose logs
+5. Try rebuilding: docker-compose up --build -d
+
+The project should now be running successfully on your new system!
+
+================================================================================
